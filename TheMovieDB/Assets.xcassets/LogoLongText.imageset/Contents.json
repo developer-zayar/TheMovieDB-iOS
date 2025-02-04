@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "LogoLongText.svg",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}
