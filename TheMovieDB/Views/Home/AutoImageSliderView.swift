@@ -26,7 +26,7 @@ struct AutoImageSliderView: View {
         TabView(selection: $currentIndex) {
             ForEach(0 ..< movies.count, id: \.self) { index in
                 VStack {
-                    AsyncImage(url: movies[index].backdropURL) { image in
+                    AsyncImage(url: ApiUrls.getImageURL(imagePath: movies[index].backdropPath)) { image in
                         image.resizable().scaledToFill()
                     } placeholder: {
                         Rectangle()

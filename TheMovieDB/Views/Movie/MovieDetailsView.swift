@@ -5,15 +5,22 @@
 //  Created by Zay Yar Phyo on 25/01/2025.
 //
 
+import SwiftData
 import SwiftUI
 
 struct MovieDetailsView: View {
     let movieId: Int
+    
+    @Environment(\.modelContext) private var modelContext
+    
     @StateObject private var viewModel: MovieViewModel = .init()
     
     @State private var isShowingTrailer = false
     @State private var selectedVideo: MovieVideo?
-    @State private var isFavorite: Bool = false
+    
+    init(movieId: Int) {
+        self.movieId = movieId
+    }
 
     var body: some View {
         NavigationStack {
@@ -24,7 +31,7 @@ struct MovieDetailsView: View {
                 case .success(let movieDetails):
                     ScrollView(showsIndicators: false) {
                         VStack(alignment: .leading, spacing: 16) {
-                            AsyncImage(url: movieDetails.backdropURL) { image in
+                            AsyncImage(url: ApiUrls.getImageURL(imagePath: movieDetails.backdropPath)) { image in
                                 image.resizable()
                                     .scaledToFill().frame(width: proxy.size.width)
                                     .frame(minHeight: proxy.size.height * 0.3, maxHeight: proxy.size.height * 0.3)
@@ -52,7 +59,7 @@ struct MovieDetailsView: View {
                                 
                             // Movie Title, Release Date and Rating
                             HStack(alignment: .top, spacing: 16) {
-                                AsyncImage(url: movieDetails.posterURL) { image in
+                                AsyncImage(url: ApiUrls.getImageURL(imagePath: movieDetails.posterPath)) { image in
                                     image.resizable()
                                         .scaledToFill()
                                 } placeholder: {
@@ -90,6 +97,48 @@ struct MovieDetailsView: View {
                                             .font(.subheadline)
                                             .foregroundStyle(.secondary)
                                     }
+                                }
+                            }
+                            .padding(.horizontal)
+                            
+                            HStack {
+                                Button {
+                                    viewModel.watchMovie(movie: movieDetails)
+                                } label: {
+                                    Label("Watch Movie", systemImage: "play.circle.fill")
+                                        .font(.headline)
+                                        .foregroundColor(.white)
+                                        .padding(.horizontal, 14)
+                                        .padding(.vertical, 8)
+                                        .background(Color.tmdbSecondary)
+                                        .clipShape(Capsule())
+                                }
+                                .alert("TheMovieDB", isPresented: $viewModel.showAlert) {
+                                    Button("OK", role: .cancel) {}
+                                } message: {
+                                    Text("Coming soon!")
+                                }
+
+                                Button {
+                                    toggleFavorite(movie: movieDetails)
+                                } label: {
+                                    Image(systemName: viewModel.movieDetails?.isFavorite == true ? "heart.fill" : "heart")
+                                        .font(.headline)
+                                        .foregroundColor(.white)
+                                        .padding(12)
+                                        .background(Color.tmdbSecondary)
+                                        .clipShape(Circle())
+                                }
+                                
+                                Button {
+                                    viewModel.toggleWatchlist()
+                                } label: {
+                                    Image(systemName: viewModel.movieDetails?.isWatchlist == true ? "bookmark.fill" : "bookmark")
+                                        .font(.headline)
+                                        .foregroundColor(.white)
+                                        .padding(12)
+                                        .background(Color.tmdbSecondary)
+                                        .clipShape(Circle())
                                 }
                             }
                             .padding(.horizontal)
@@ -179,6 +228,7 @@ struct MovieDetailsView: View {
         }
         .toolbar(.hidden, for: .tabBar)
         .onAppear {
+            viewModel.setModelContext(modelContext)
             Task {
                 await viewModel.fetchMovieDetails(movieId: self.movieId)
                 await viewModel.fetchMovieCasts(movieId: self.movieId)
@@ -187,6 +237,40 @@ struct MovieDetailsView: View {
         }
         .sheet(item: $selectedVideo) { video in
             YouTubeTrailerView(movieId: movieId, videoKey: video.key)
+        }
+    }
+    
+    func toggleFavorite(movie: Movie) {
+//        guard let movie = viewModel.movieDetails else { return }
+        print("IsFavorite Toggled:\(movie.isFavorite ?? false)")
+        if movie.isFavorite ?? false {
+            modelContext.delete(movie)
+            movie.isFavorite = false
+            print("IsFavorite Toggled:\(movie.isFavorite ?? false)")
+        } else {
+            movie.isFavorite = true
+            if fetchMovieFromSwiftData(id: movie.id) == nil {
+                modelContext.insert(movie)
+                saveContext()
+            }
+        }
+    }
+    
+    private func fetchMovieFromSwiftData(id: Int) -> Movie? {
+        let descriptor = FetchDescriptor<Movie>(predicate: #Predicate { $0.id == id })
+        do {
+            return try modelContext.fetch(descriptor).first
+        } catch {
+            print("Failed to fetch movie from SwiftData: \(error)")
+            return nil
+        }
+    }
+
+    private func saveContext() {
+        do {
+            try modelContext.save()
+        } catch {
+            print("Failed to save context: \(error)")
         }
     }
 }

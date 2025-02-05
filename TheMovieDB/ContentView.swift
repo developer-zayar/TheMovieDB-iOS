@@ -8,34 +8,34 @@
 import SwiftUI
 
 struct ContentView: View {
-    var body: some View {
-        TabView {
-            HomeView()
-                .tabItem {
-                    Label("Home", systemImage: "house.fill")
-                }
-            MovieSearchView()
-                .tabItem {
-                    Label("Search", systemImage: "magnifyingglass")
-                }
-            //            FavoriteMovieView()
-            //                .tabItem {
-            //                    Label("Favorite", systemImage: "bookmark.fill")
-            //                }
-            ProfileView()
-                .tabItem {
-                    Label("Profile", systemImage: "person.fill")
-                }
-        }
-        .navigationBarBackButtonHidden()
+    private let appStorageManager = AppStorageManager()
 
-//        VStack {
-//            Image(systemName: "globe")
-//                .imageScale(.large)
-//                .foregroundStyle(.tint)
-//            Text("Hello, world!")
-//        }
-//        .padding()
+    @State private var isFirstLaunch: Bool = false
+
+    init() {
+        let isLaunched = appStorageManager.getObject(forKey: UserDefaultKeys.isFirstLaunch) != nil
+        _isFirstLaunch = State(initialValue: !isLaunched)
+    }
+
+    var body: some View {
+        if isFirstLaunch {
+            OnboardingView(isFirstLaunch: $isFirstLaunch)
+        } else {
+            TabView {
+                HomeView()
+                    .tabItem {
+                        Label("Home", systemImage: "house.fill")
+                    }
+                MovieSearchView()
+                    .tabItem {
+                        Label("Search", systemImage: "magnifyingglass")
+                    }
+                ProfileView()
+                    .tabItem {
+                        Label("Profile", systemImage: "person.fill")
+                    }
+            }
+        }
     }
 }
 

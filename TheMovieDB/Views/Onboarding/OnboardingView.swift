@@ -8,16 +8,18 @@
 import SwiftUI
 
 struct OnboardingView: View {
+    @Binding var isFirstLaunch: Bool
+
     private let appStorageManager = AppStorageManager()
 
     @State private var currentIndex = 0
     @State private var navigateToMain = false
 
     let onboardingData = [
-        ("onboarding1", "Welcome to TheMovieDB", "Discover the latest movies and TV shows."),
-        ("onboarding2", "Exclusive Content", "Watch trailers and behind-the-scenes footage."),
-        ("onboarding3", "Track Your Favorites", "Save your favorite movies to watch later and build your watchlist."),
-        ("onboarding4", "Stay Updated", "Get notified about the latest releases and trending movies."),
+        ("Onboarding1", "Welcome to TheMovieDB", "Discover the latest movies and TV shows."),
+        ("Onboarding2", "Exclusive Content", "Watch trailers and behind-the-scenes footage."),
+        ("Onboarding3", "Track Your Favorites", "Save your favorite movies to watch later and build your watchlist."),
+        ("Onboarding4", "Stay Updated", "Get notified about the latest releases and trending movies."),
     ]
 
     var body: some View {
@@ -61,9 +63,10 @@ struct OnboardingView: View {
                         if currentIndex < onboardingData.count - 1 {
                             currentIndex += 1
                         } else {
+                            isFirstLaunch = false
                             appStorageManager.saveObject(true, forKey: UserDefaultKeys.isFirstLaunch)
-                            print("Onboarding Finished")
-                            navigateToMain = true
+//                            print("Onboarding Finished")
+//                            navigateToMain = true
                         }
                     }) {
                         Text(currentIndex == onboardingData.count - 1 ? "Get Started" : "Next")
@@ -79,15 +82,15 @@ struct OnboardingView: View {
                 }
             }
             .toolbarBackground(.hidden, for: .navigationBar)
-            .navigationDestination(isPresented: $navigateToMain) {
-                ContentView()
-            }
+//            .navigationDestination(isPresented: $navigateToMain) {
+//                ContentView()
+//            }
         }
     }
 }
 
 #Preview {
-    OnboardingView()
+    OnboardingView(isFirstLaunch: .constant(true))
 }
 
 struct OnboardingViewItem: View {

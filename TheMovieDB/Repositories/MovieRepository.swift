@@ -38,10 +38,10 @@ class MovieRepository {
         return movieResponse.results
     }
 
-    func fetchMovieDetails(id: Int) async throws -> MovieDetails {
+    func fetchMovieDetails(id: Int) async throws -> Movie {
         print(ApiUrls.movieDetails(movieId: id))
         let data = try await apiService.getRequest(url: ApiUrls.movieDetails(movieId: id))
-        let movieDetailsResponse = try JSONDecoder().decode(MovieDetails.self, from: data)
+        let movieDetailsResponse = try JSONDecoder().decode(Movie.self, from: data)
         return movieDetailsResponse
     }
 

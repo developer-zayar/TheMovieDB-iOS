@@ -16,6 +16,11 @@ struct MovieResponse: Decodable {
     }
 }
 
+struct MovieDates: Codable {
+    let maximum: String?
+    let minimum: String?
+}
+
 struct CastResponse: Decodable {
     let id: Int
     let cast: [Cast]

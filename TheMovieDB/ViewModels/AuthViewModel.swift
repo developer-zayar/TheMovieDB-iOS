@@ -49,10 +49,10 @@ class AuthViewModel: ObservableObject {
                 appStorageManager.saveString(sessionId, forKey: UserDefaultKeys.userSessionId)
                 isLoggedIn = true
             }
-        } catch let ApiError.unauthorized(statusCode, message) {
+        } catch let ApiError.unauthorized(_, message) {
             errorMessage = "Login failed: \(message)"
             showAlert = true
-        } catch let ApiError.badServerResponse(statusCode, message) {
+        } catch let ApiError.badServerResponse(_, message) {
             errorMessage = "Server error: \(message)"
             showAlert = true
         } catch {
@@ -70,7 +70,7 @@ class AuthViewModel: ObservableObject {
             return
         }
 
-        if let userProfile {
+        guard userProfile == nil else {
             return
         }
 

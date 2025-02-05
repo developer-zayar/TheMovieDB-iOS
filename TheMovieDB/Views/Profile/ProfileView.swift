@@ -26,54 +26,35 @@ struct ProfileView: View {
                 if viewModel.isLoggedIn {
                     VStack {
                         if viewModel.isLoading {
-                            ProgressView("Loading ...").padding()
-                        } else if viewModel.errorMessage != nil {
-                            ErrorView(message: viewModel.errorMessage)
+                            ProgressView("Loading ...")
+                                .padding()
+                                .frame(maxHeight: .infinity)
+                        } else if viewModel.userProfile != nil {
+                            UserDetailsView(viewModel: viewModel)
                         } else {
-                            AsyncImage(url: ApiUrls.getImageURL(imagePath: viewModel.userProfile?.avatar?.tmdb?.avatarPath)) { image in
-                                image.resizable()
-                                    .scaledToFit()
-                                    .frame(width: 80, height: 80)
-                                    .clipShape(Circle())
-                            } placeholder: {
-                                Circle()
-                                    .fill(Color.gray.opacity(0.5))
-                                    .frame(width: 80, height: 80)
-                                    .overlay(
-                                        Image(systemName: "person.fill")
-                                            .resizable()
-                                            .scaledToFit()
-                                            .foregroundColor(.white.opacity(0.8))
-                                            .frame(width: 40, height: 40)
-                                    )
-                            }
-
-                            Text("\(viewModel.userProfile?.username ?? "N/A")")
-                                .font(.headline)
-                                .fontWeight(.bold)
-                                .foregroundStyle(.tmdbPrimary)
+                            ErrorView()
                         }
 
-                        Spacer()
+//                        Spacer()
 
-                        Button {
-                            showLogoutAlert = true
-                        } label: {
-                            Text("Logout")
-                                .font(.headline)
-                                .padding(10)
-                                .frame(maxWidth: .infinity)
-                                .foregroundStyle(Color.red)
-                        }
-                        .alert("Logout", isPresented: $showLogoutAlert) {
-                            Button("Cancel", role: .cancel) {}
-                            Button("Logout", role: .destructive) {
-                                viewModel.logout()
-                                dismiss()
-                            }
-                        } message: {
-                            Text("Are you sure you want to log out?")
-                        }
+//                        Button {
+//                            showLogoutAlert = true
+//                        } label: {
+//                            Text("Logout")
+//                                .font(.headline)
+//                                .padding(10)
+//                                .frame(maxWidth: .infinity)
+//                                .foregroundStyle(Color.red)
+//                        }
+//                        .alert("Logout", isPresented: $showLogoutAlert) {
+//                            Button("Cancel", role: .cancel) {}
+//                            Button("Logout", role: .destructive) {
+//                                viewModel.logout()
+//                                dismiss()
+//                            }
+//                        } message: {
+//                            Text("Are you sure you want to log out?")
+//                        }
                     }
                     .onAppear {
                         Task {
@@ -87,6 +68,7 @@ struct ProfileView: View {
                 }
             }
             .padding()
+            .frame(maxHeight: .infinity, alignment: .top)
             .navigationTitle("Profile")
             .navigationBarTitleDisplayMode(.inline)
             .alert("Error", isPresented: $viewModel.showAlert) {

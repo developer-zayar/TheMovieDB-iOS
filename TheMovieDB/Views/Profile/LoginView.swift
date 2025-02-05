@@ -17,16 +17,16 @@ struct LoginView: View {
     var body: some View {
         NavigationStack {
             VStack(spacing: 16) {
-//                Text("TheMovieDB Login")
-//                    .font(.largeTitle)
-//                    .fontWeight(.bold)
+                Text("Welcome Back!")
+                    .font(.headline)
+                    .fontWeight(.bold)
+                    .padding(8)
 
                 TextField("Username", text: $username)
                     .textFieldStyle(.plain)
                     .autocorrectionDisabled()
                     .autocapitalization(.none)
                     .padding(12)
-                    .foregroundStyle(.tmdbPrimary)
                     .background(Color(.systemGray6))
                     .clipShape(RoundedRectangle(cornerRadius: 16))
                     .padding(.horizontal)
@@ -34,7 +34,6 @@ struct LoginView: View {
                 SecureField("Password", text: $password)
                     .textFieldStyle(.plain)
                     .padding(12)
-                    .foregroundStyle(.tmdbPrimary)
                     .background(Color(.systemGray6))
                     .clipShape(RoundedRectangle(cornerRadius: 16))
                     .padding(.horizontal)
@@ -48,11 +47,11 @@ struct LoginView: View {
                 }
 
                 Text("Don't you have account?")
-                    .font(.headline)
+                    .font(.body)
                     .padding(.top)
-                
+
                 Link("Sign Up Here", destination: AppUtils.tmdbSignupUrl!)
-                    .font(.headline)
+                    .font(.body)
                     .foregroundStyle(.tmdbSecondary)
 
 //                Button("Sign Up Here") {
