@@ -21,27 +21,33 @@ struct FavoritesView: View {
         NavigationStack {
             Group {
                 if favoriteMovies.isEmpty {
-                    EmptyMoviesView(imageName: "heart.slash.fill", title: "No Favorite Movies", subtitle: "Add movies to your favorites to see them here.")
+                    ContentUnavailableView("No Favorite Movies", systemImage: "heart.slash.fill", description: Text("Add movies to your favorites to see them here."))
+
                 } else {
-                    List {
-                        ForEach(filteredMovies) { movie in
-                            NavigationLink {
-                                MovieDetailsView(movieId: movie.id)
-                            } label: {
-                                MovieListItemView(movie: movie)
+                    Group {
+                        if filteredMovies.isEmpty && !searchText.isEmpty {
+                            ContentUnavailableView.search
+                        } else {
+                            List {
+                                ForEach(filteredMovies) { movie in
+                                    NavigationLink {
+                                        MovieDetailsView(movieId: movie.id)
+                                    } label: {
+                                        MovieListItemView(movie: movie)
+                                    }
+                                }
+                                .onDelete(perform: deleteMovies)
                             }
-                            //                    .buttonStyle(.plain)
+                            .listStyle(.plain)
                         }
-                        .onDelete(perform: deleteMovies)
                     }
-                    .listStyle(.plain)
-                    .toolbar(.hidden, for: .tabBar)
                     .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always), prompt: "Search movies")
                 }
-                //            .toolbar {
-                //                EditButton()
-                //            }
             }
+            .toolbar(.hidden, for: .tabBar)
+            //            .toolbar {
+            //                EditButton()
+            //            }
             .navigationTitle("Favorite Movies")
         }
     }

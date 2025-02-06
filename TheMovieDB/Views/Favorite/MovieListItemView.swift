@@ -29,8 +29,8 @@ struct MovieListItemView: View {
             }
             .frame(width: 100, height: 150)
             .clipShape(RoundedRectangle(cornerRadius: 8))
-            .shadow(radius: 4)
-//
+//            .shadow(radius: 4)
+
             VStack(alignment: .leading, spacing: 6) {
                 Text(movie.title)
                     .font(.headline)

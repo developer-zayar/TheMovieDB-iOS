@@ -80,4 +80,8 @@ class ApiUrls {
         guard let imagePath else { return nil }
         return URL(string: "https://image.tmdb.org/t/p/w500\(imagePath)")
     }
+
+    static func watchMovieURL(movieId: Int) -> URL? {
+        return URL(string: String(format: "https://vidsrc.xyz/embed/movie/%d", movieId))
+    }
 }

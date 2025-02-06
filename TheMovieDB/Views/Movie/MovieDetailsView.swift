@@ -102,8 +102,8 @@ struct MovieDetailsView: View {
                                 .padding(.horizontal)
                                 
                                 HStack {
-                                    Button {
-                                        viewModel.watchMovie(movie: movieDetails)
+                                    NavigationLink {
+                                        FullScreenWebView(movieId: movieId)
                                     } label: {
                                         Label("Watch Movie", systemImage: "play.circle.fill")
                                             .font(.headline)
@@ -113,6 +113,18 @@ struct MovieDetailsView: View {
                                             .background(Color.tmdbSecondary)
                                             .clipShape(Capsule())
                                     }
+
+//                                    Button {
+//                                        viewModel.watchMovie(movie: movieDetails)
+//                                    } label: {
+//                                        Label("Watch Movie", systemImage: "play.circle.fill")
+//                                            .font(.headline)
+//                                            .foregroundColor(.white)
+//                                            .padding(.horizontal, 14)
+//                                            .padding(.vertical, 8)
+//                                            .background(Color.tmdbSecondary)
+//                                            .clipShape(Capsule())
+//                                    }
                                     
                                     Button {
                                         if authViewModel.isLoggedIn {
@@ -122,7 +134,7 @@ struct MovieDetailsView: View {
                                             viewModel.showAlert.toggle()
                                         }
                                     } label: {
-                                        Image(systemName: viewModel.movieDetails?.isFavorite == true ? "heart.fill" : "heart")
+                                        Image(systemName: movieDetails.isFavorite == true ? "heart.fill" : "heart")
                                             .font(.headline)
                                             .foregroundColor(.white)
                                             .padding(12)
@@ -138,7 +150,7 @@ struct MovieDetailsView: View {
                                             viewModel.showAlert.toggle()
                                         }
                                     } label: {
-                                        Image(systemName: viewModel.movieDetails?.isWatchlist == true ? "bookmark.fill" : "bookmark")
+                                        Image(systemName: movieDetails.isWatchlist == true ? "bookmark.fill" : "bookmark")
                                             .font(.headline)
                                             .foregroundColor(.white)
                                             .padding(12)
@@ -227,7 +239,7 @@ struct MovieDetailsView: View {
                         }
                     } else {
                         Text("No movie details available!")
-                            .foregroundColor(.gray)
+                            .foregroundColor(.secondary)
                             .padding()
                     }
                 }

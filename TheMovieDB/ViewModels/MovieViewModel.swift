@@ -10,7 +10,6 @@ import SwiftData
 
 @MainActor
 class MovieViewModel: ObservableObject {
-//    @Published var movieDetailsState: DataState<Movie> = .idle
     @Published var movieCastsState: DataState<[Cast]> = .idle
     @Published var movieVideoState: DataState<[MovieVideo]> = .idle
 
@@ -28,24 +27,20 @@ class MovieViewModel: ObservableObject {
     }
 
     func fetchMovieDetails(movieId: Int, modelContext: ModelContext) async {
-//        movieDetailsState = .loading
         isLoading = true
 
         do {
             let movieDetails = try await movieRepository.fetchMovieDetails(id: movieId)
-//            movieDetailsState = .success(movieDetails)
+
             if let existingMovie = fetchMovieFromSwiftData(id: movieId, modelContext: modelContext) {
                 movieDetails.isFavorite = existingMovie.isFavorite
                 movieDetails.isWatchlist = existingMovie.isWatchlist
-            } else {
-                modelContext.insert(movieDetails)
             }
 
             self.movieDetails = movieDetails
             isLoading = false
 
         } catch {
-//            movieDetailsState = .error(error.localizedDescription)
             isLoading = false
             errorMessage = "Failed to load movie details:\n\(error.localizedDescription)"
         }
@@ -74,38 +69,38 @@ class MovieViewModel: ObservableObject {
     func toggleFavorite(modelContext: ModelContext) {
         guard let movieDetails else { return }
 
-        if movieDetails.isFavorite {
-            movieDetails.isFavorite = false
-            modelContext.delete(movieDetails)
+        if let existingMovie = fetchMovieFromSwiftData(id: movieDetails.id, modelContext: modelContext) {
+            existingMovie.isFavorite = !existingMovie.isFavorite
 
-            alertMessage = "Removed from Favorites"
-            showAlert.toggle()
+            movieDetails.isFavorite = existingMovie.isFavorite
+            alertMessage = existingMovie.isFavorite ? "Added to Favorites" : "Removed from Favorites"
         } else {
             movieDetails.isFavorite = true
             modelContext.insert(movieDetails)
 
             alertMessage = "Added to Favorites"
-            showAlert.toggle()
         }
+
+        showAlert.toggle()
         saveContext(modelContext)
     }
 
     func toggleWatchlist(modelContext: ModelContext) {
         guard let movieDetails else { return }
 
-        if movieDetails.isWatchlist {
-            movieDetails.isWatchlist = false
-            modelContext.delete(movieDetails)
+        if let existingMovie = fetchMovieFromSwiftData(id: movieDetails.id, modelContext: modelContext) {
+            existingMovie.isWatchlist = !existingMovie.isWatchlist
 
-            alertMessage = "Removed from Watchlist"
-            showAlert.toggle()
+            movieDetails.isWatchlist = existingMovie.isWatchlist
+            alertMessage = existingMovie.isFavorite ? "Added to Favorites" : "Removed from Favorites"
         } else {
             movieDetails.isWatchlist = true
             modelContext.insert(movieDetails)
 
-            alertMessage = "Added to Watchlist"
-            showAlert.toggle()
+            alertMessage = "Added to Favorites"
         }
+
+        showAlert.toggle()
         saveContext(modelContext)
     }
 

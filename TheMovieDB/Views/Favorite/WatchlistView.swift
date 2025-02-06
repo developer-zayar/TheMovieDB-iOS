@@ -21,23 +21,29 @@ struct WatchlistView: View {
         NavigationStack {
             Group {
                 if watchlistMovies.isEmpty {
-                    EmptyMoviesView(imageName: "bookmark.slash.fill", title: "No Movies in Watchlist", subtitle: "Add movies to your watchlist to see them here.")
+                    ContentUnavailableView("No Movies in Watchlist", systemImage: "bookmark.slash.fill", description: Text("Add movies to your watchlist to see them here."))
                 } else {
-                    List {
-                        ForEach(filteredMovies) { movie in
-                            NavigationLink {
-                                MovieDetailsView(movieId: movie.id)
-                            } label: {
-                                MovieListItemView(movie: movie)
+                    Group {
+                        if filteredMovies.isEmpty && !searchText.isEmpty {
+                            ContentUnavailableView.search
+                        } else {
+                            List {
+                                ForEach(filteredMovies) { movie in
+                                    NavigationLink {
+                                        MovieDetailsView(movieId: movie.id)
+                                    } label: {
+                                        MovieListItemView(movie: movie)
+                                    }
+                                }
+                                .onDelete(perform: deleteMovies)
                             }
+                            .listStyle(.plain)
                         }
-                        .onDelete(perform: deleteMovies)
                     }
-                    .listStyle(.plain)
-                    .toolbar(.hidden, for: .tabBar)
                     .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always), prompt: "Search movies")
                 }
             }
+            .toolbar(.hidden, for: .tabBar)
             .navigationTitle("Watchlist Movies")
         }
     }
