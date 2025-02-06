@@ -40,8 +40,8 @@ class Movie: Codable, Identifiable {
     var status: String
     var tagline: String
 
-    var isFavorite: Bool?
-    var isWatchlist: Bool?
+    var isFavorite: Bool = false
+    var isWatchlist: Bool = false
 
     // MARK: - Codable Conformance
 
@@ -55,19 +55,20 @@ class Movie: Codable, Identifiable {
         case releaseDate = "release_date"
         case voteAverage = "vote_average"
         case voteCount = "vote_count"
-        case isFavorite
         case belongsToCollection = "belongs_to_collection"
         case genres, imdbId = "imdb_id"
         case originCountry = "origin_country"
         case productionCompanies = "production_companies"
         case productionCountries = "production_countries"
         case spokenLanguages = "spoken_languages"
+        case isFavorite
+        case isWatchlist
     }
 
     // MARK: - Initializer for SwiftData
 
     init(id: Int, adult: Bool, backdropPath: String? = nil, genreIds: [Int]? = nil, originalLanguage: String, originalTitle: String, overview: String, popularity: Double, posterPath: String? = nil, releaseDate: String, title: String, video: Bool, voteAverage: Double, voteCount: Int, belongsToCollection: Collection? = nil, budget: Int = 0, genres: [Genre]? = nil, homepage: String? = nil, imdbId: String? = nil, originCountry: [String]? = nil, productionCompanies: [ProductionCompany]? = nil, productionCountries: [ProductionCountry]? = nil, revenue: Int = 0, runtime: Int = 0, spokenLanguages: [SpokenLanguage]? = nil, status: String = "", tagline: String = "",
-         isFavorite: Bool? = false, isWatchlist: Bool? = false)
+         isFavorite: Bool = false, isWatchlist: Bool = false)
     {
         self.id = id
         self.adult = adult
@@ -107,7 +108,7 @@ class Movie: Codable, Identifiable {
         id = try container.decode(Int.self, forKey: .id)
         adult = try container.decode(Bool.self, forKey: .adult)
         backdropPath = try container.decodeIfPresent(String.self, forKey: .backdropPath)
-        genreIds = try container.decodeIfPresent([Int].self, forKey: .genreIds) ?? nil
+        genreIds = try? container.decodeIfPresent([Int].self, forKey: .genreIds) ?? nil
         originalLanguage = try container.decode(String.self, forKey: .originalLanguage)
         originalTitle = try container.decode(String.self, forKey: .originalTitle)
         overview = try container.decode(String.self, forKey: .overview)
@@ -123,7 +124,7 @@ class Movie: Codable, Identifiable {
         genres = try container.decodeIfPresent([Genre].self, forKey: .genres)
         homepage = try container.decodeIfPresent(String.self, forKey: .homepage)
         imdbId = try container.decodeIfPresent(String.self, forKey: .imdbId)
-        originCountry = try container.decodeIfPresent([String].self, forKey: .originCountry) ?? nil
+        originCountry = try? container.decodeIfPresent([String].self, forKey: .originCountry) ?? nil
         productionCompanies = try container.decodeIfPresent([ProductionCompany].self, forKey: .productionCompanies)
         productionCountries = try container.decodeIfPresent([ProductionCountry].self, forKey: .productionCountries)
         revenue = try container.decodeIfPresent(Int.self, forKey: .revenue) ?? 0
@@ -131,6 +132,8 @@ class Movie: Codable, Identifiable {
         spokenLanguages = try container.decodeIfPresent([SpokenLanguage].self, forKey: .spokenLanguages)
         status = try container.decodeIfPresent(String.self, forKey: .status) ?? ""
         tagline = try container.decodeIfPresent(String.self, forKey: .tagline) ?? ""
+        isFavorite = try container.decodeIfPresent(Bool.self, forKey: .isFavorite) ?? false
+        isWatchlist = try container.decodeIfPresent(Bool.self, forKey: .isWatchlist) ?? false
     }
 
     // MARK: - Encoding (From SwiftData Model to JSON)
@@ -164,5 +167,7 @@ class Movie: Codable, Identifiable {
         try container.encodeIfPresent(spokenLanguages, forKey: .spokenLanguages)
         try container.encode(status, forKey: .status)
         try container.encode(tagline, forKey: .tagline)
+        try container.encode(isFavorite, forKey: .isFavorite)
+        try container.encode(isWatchlist, forKey: .isWatchlist)
     }
 }

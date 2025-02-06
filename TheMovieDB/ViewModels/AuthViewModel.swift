@@ -30,7 +30,7 @@ class AuthViewModel: ObservableObject {
         isLoading = true
         do {
             // a delay for loading animation
-            try await Task.sleep(for: .seconds(2))
+            try await Task.sleep(for: .seconds(1))
 
             // Get request token
             let requestToken = try await authRepository.requestToken()

@@ -19,24 +19,30 @@ struct FavoritesView: View {
 
     var body: some View {
         NavigationStack {
-            List {
-                ForEach(filteredMovies) { movie in
-                    NavigationLink {
-                        MovieDetailsView(movieId: movie.id)
-                    } label: {
-                        MovieListItemView(movie: movie)
+            Group {
+                if favoriteMovies.isEmpty {
+                    EmptyMoviesView(imageName: "heart.slash.fill", title: "No Favorite Movies", subtitle: "Add movies to your favorites to see them here.")
+                } else {
+                    List {
+                        ForEach(filteredMovies) { movie in
+                            NavigationLink {
+                                MovieDetailsView(movieId: movie.id)
+                            } label: {
+                                MovieListItemView(movie: movie)
+                            }
+                            //                    .buttonStyle(.plain)
+                        }
+                        .onDelete(perform: deleteMovies)
                     }
-//                    .buttonStyle(.plain)
+                    .listStyle(.plain)
+                    .toolbar(.hidden, for: .tabBar)
+                    .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always), prompt: "Search movies")
                 }
-                .onDelete(perform: deleteMovies)
+                //            .toolbar {
+                //                EditButton()
+                //            }
             }
-            .listStyle(.plain)
-            .searchable(text: $searchText, prompt: "Search movies")
-            .toolbar(.hidden, for: .tabBar)
             .navigationTitle("Favorite Movies")
-//            .toolbar {
-//                EditButton()
-//            }
         }
     }
 
@@ -51,7 +57,9 @@ struct FavoritesView: View {
     private func deleteMovies(at offsets: IndexSet) {
         for index in offsets {
             let movie = favoriteMovies[index]
-            modelContext.delete(movie)
+            movie.isFavorite = false
+            // TODO: uncomment to delete in both favorite and watchlist
+//            modelContext.delete(movie)
         }
     }
 }

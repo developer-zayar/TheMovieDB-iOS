@@ -41,12 +41,14 @@ struct MovieListItemView: View {
                     .font(.subheadline)
                     .foregroundColor(.secondary)
 
-                HStack {
+                HStack(spacing: 4) {
                     Image(systemName: "star.fill")
-                        .foregroundColor(.yellow)
-                    Text(String(format: "%.1f", movie.voteAverage))
                         .font(.subheadline)
-                        .foregroundColor(.secondary)
+                        .foregroundStyle(.yellow)
+
+                    Text("\(movie.voteAverage, specifier: "%.1f") / \(movie.voteCount) votes")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
