@@ -16,29 +16,28 @@ struct ProfileView: View {
 
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack {
-                    Image(.logoLongText)
-                        .resizable()
-                        .scaledToFit()
-                        .frame(height: 64)
-                        .padding()
+            VStack {
+                Image(.logoLongText)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(height: 24)
+//                    .padding(8)
 
-                    if viewModel.isLoggedIn {
-                        VStack {
-                            if viewModel.isLoading {
-                                ProgressView("Loading ...")
-                                    .padding()
-                                    .frame(maxHeight: .infinity)
-                            } else if viewModel.errorMessage != nil {
-                                ErrorView(message: viewModel.errorMessage)
-                            } else if viewModel.userProfile != nil {
-                                UserDetailsView(viewModel: viewModel)
-                            } else {
-                                Text("No user profile found.")
-                                    .foregroundColor(.secondary)
-                                    .padding()
-                            }
+                if viewModel.isLoggedIn {
+                    VStack {
+                        if viewModel.isLoading {
+                            ProgressView("Loading ...")
+                                .padding()
+                                .frame(maxHeight: .infinity)
+                        } else if viewModel.errorMessage != nil {
+                            ErrorView(message: viewModel.errorMessage)
+                        } else if viewModel.userProfile != nil {
+                            UserDetailsView(viewModel: viewModel)
+                        } else {
+                            Text("No user profile found.")
+                                .foregroundColor(.secondary)
+                                .padding()
+                        }
 
 //                            Spacer()
 //
@@ -60,21 +59,20 @@ struct ProfileView: View {
 //                            } message: {
 //                                Text("Are you sure you want to log out?")
 //                            }
-                        }
-                        .onAppear {
-                            Task {
-                                await viewModel.getUserProfile()
-                            }
-                        }
-
-                    } else {
-                        LoginView(viewModel: viewModel)
-                        //                    Text("Login required")
                     }
+                    .onAppear {
+                        Task {
+                            await viewModel.getUserProfile()
+                        }
+                    }
+
+                } else {
+                    LoginView(viewModel: viewModel)
+                    //                    Text("Login required")
                 }
-                .padding()
-                .frame(maxHeight: .infinity, alignment: .top)
             }
+            .padding()
+//            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
             .navigationTitle("Profile")
             .navigationBarTitleDisplayMode(.inline)
             .alert("Error", isPresented: $viewModel.showAlert) {

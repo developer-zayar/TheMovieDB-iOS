@@ -15,7 +15,7 @@ struct LoginView: View {
     @Environment(\.openURL) var openURL
 
     var body: some View {
-        NavigationStack {
+        ScrollView {
             VStack(spacing: 16) {
                 Text("Welcome Back!")
                     .font(.headline)

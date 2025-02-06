@@ -14,6 +14,12 @@ struct HomeView: View {
         NavigationStack {
             ScrollView(showsIndicators: false) {
                 VStack(alignment: .leading, spacing: 8) {
+                    Image(.logoShortText)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(height: 32)
+                        .padding()
+
                     if !homeViewModel.nowPlayingMovies.isEmpty {
                         Text("Now Playing")
                             .font(.title2)
@@ -40,7 +46,7 @@ struct HomeView: View {
                     }
                 }
             }
-            .navigationTitle("TheMovieDB")
+//            .navigationTitle("TheMovieDB")
 //            .navigationBarTitleDisplayMode(.inline)
 //            .toolbarBackground(Color.tmdbPrimary, for: .navigationBar)
             .onAppear {
