@@ -92,12 +92,12 @@ class MovieViewModel: ObservableObject {
             existingMovie.isWatchlist = !existingMovie.isWatchlist
 
             movieDetails.isWatchlist = existingMovie.isWatchlist
-            alertMessage = existingMovie.isFavorite ? "Added to Favorites" : "Removed from Favorites"
+            alertMessage = existingMovie.isFavorite ? "Added to Watchlist" : "Removed from Watchlist"
         } else {
             movieDetails.isWatchlist = true
             modelContext.insert(movieDetails)
 
-            alertMessage = "Added to Favorites"
+            alertMessage = "Added to Watchlist"
         }
 
         showAlert.toggle()
